@@ -16,6 +16,9 @@ class ClientConnector:
         self.__sock = socket.socket()
         self.__max_size = max_size
 
+    def set_timeout(self, timeout):
+        self.__sock.settimeout(timeout)
+
     def set_port(self, port):
         """
         setting current port

@@ -11,13 +11,11 @@ import commonFileLib
 from client.clientConnector import ClientConnector
 from client.gui.clientGui import Ui_Dialog
 
-
 # Logging settings
 logging.basicConfig(handlers=[
-        logging.FileHandler(u"clientLog.log"),
-        logging.StreamHandler()
-    ], format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG)
-
+    logging.FileHandler(u"clientLog.log"),
+    logging.StreamHandler()
+], format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG)
 
 # Path to properties file
 PROPERTIES_FILE = "./resources/clientconfig.ini"
@@ -155,7 +153,7 @@ class MyWin(QtWidgets.QMainWindow):
         down_path = self.ui.downloadFileLineEdit.text()
         if down_path:
             self.__client_connection.send(("DOWNLOAD " + str(down_path) + "\n").encode())
-            commonFileLib.receive_file(self.__client_connection, self.__upload_path, "")
+            commonFileLib.receive_file(self.__client_connection, down_path, "")
         else:
             self.log_info("download path wasn't setted")
 

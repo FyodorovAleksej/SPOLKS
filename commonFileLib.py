@@ -3,6 +3,7 @@ import time
 
 
 def receive_file(server_connector, destination_path, old_data):
+    destination_path = str(destination_path)
     print("receive = " + old_data)
     total_size = 0
     start_time = time.time()
@@ -30,15 +31,11 @@ def send_file(server_connector, source_path, partition_size):
     total_size = 0
     start_time = time.time()
     if file_source:
-        buffer = ""
         while True:
-            success = 0
-            buffer += file_source.read(partition_size - success)
-            print("read : " + buffer)
+            buffer = file_source.read(partition_size)
             if buffer is not "":
                 success = server_connector.send(buffer.encode())
-                total_size += success
-                buffer = buffer[success:]
+                total_size += success * partition_size
             else:
                 break
     return total_size / (time.time() - start_time)
