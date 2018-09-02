@@ -1,8 +1,10 @@
 import re
 
+from server.command.serverDownloadCommand import ServerDownloadCommand
 from server.command.serverEchoCommand import ServerEchoCommand
 from server.command.serverExitCommand import ServerExitCommand
 from server.command.serverTimeCommand import ServerTimeCommand
+from server.command.serverUploadCommand import ServerUploadCommand
 
 LINE_END = "\n|\r\n"
 COMMAND_SEPARATOR = " "
@@ -15,7 +17,9 @@ class ServerParser:
                            "TIME": ServerTimeCommand(),
                            "EXIT": ServerExitCommand(),
                            "QUIT": ServerExitCommand(),
-                           "CLOSE": ServerExitCommand()}
+                           "CLOSE": ServerExitCommand(),
+                           "DOWNLOAD": ServerDownloadCommand(),
+                           "UPLOAD": ServerUploadCommand()}
         self.__socket = socket
 
     def parse_command(self, line):
@@ -29,15 +33,13 @@ class ServerParser:
         command_parts = re.split(COMMAND_SEPARATOR, line, 1)
         print(command_parts)  # debug
         # getting command from diction
-        command = self.__commands[command_parts[0].upper()]
-        if command is not None:
-            if command.is_exit_command():
-                self.__socket.close()
-                return None
-            else:
-                return command.perform_command(command_parts[1])
-        else:
-            return "Command not found \"" + line + "\""
+        params = None
+        if len(command_parts) == 2:
+            params = command_parts[1]
+        command = None
+        if command_parts[0].upper() in self.__commands.keys():
+            command = self.__commands[command_parts[0].upper()]
+        return command, params
 
 
 def split_lines(input_text):

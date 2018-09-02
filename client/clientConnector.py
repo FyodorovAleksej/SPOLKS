@@ -31,7 +31,13 @@ class ClientConnector:
         ===============================
         :return: result of connection
         """
-        return self.__sock.connect((self.__hostname, self.__port))
+        try:
+            self.__sock.connect((self.__hostname, self.__port))
+            return True
+        except OSError:
+            self.__sock.close()
+            self.__sock = socket.socket()
+            return False
 
     def send(self, byte_array):
         """

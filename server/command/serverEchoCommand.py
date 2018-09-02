@@ -1,3 +1,4 @@
+import logging
 import re
 
 from server.command.serverCommand import ServerCommand
@@ -10,6 +11,7 @@ ESCAPE_PART = "(\".*?\")|(\'.*?\')"
 # [-n] - echo string without go to new line
 class ServerEchoCommand(ServerCommand):
     def __init__(self):
+        self.__LOGGER = logging.getLogger(ServerEchoCommand.__name__)
         # bits of different flags
         self.__flags = {"-n": 2 ** 0}
         # current mode
@@ -18,6 +20,7 @@ class ServerEchoCommand(ServerCommand):
         self.__mapping = {0: self.perform_mode_0, 1: self.perform_mode_1}
 
     def perform_command(self, param_string):
+        self.__LOGGER.debug("performing echo command with args = " + param_string)
         """
         performing echo command
         :param param_string: params of command
@@ -36,6 +39,12 @@ class ServerEchoCommand(ServerCommand):
         return self.__mapping[self.__mode](param_string)
 
     def is_exit_command(self):
+        return False
+
+    def is_download_command(self):
+        return False
+
+    def is_upload_command(self):
         return False
 
     def perform_mode_0(self, param_string):

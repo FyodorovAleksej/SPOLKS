@@ -1,14 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import logging
 import sys
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QFileDialog
 from configobj import ConfigObj
 
+import commonFileLib
 from client.clientConnector import ClientConnector
 from client.gui.clientGui import Ui_Dialog
+
+
+# Logging settings
+logging.basicConfig(handlers=[
+        logging.FileHandler(u"clientLog.log"),
+        logging.StreamHandler()
+    ], format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG)
+
 
 # Path to properties file
 PROPERTIES_FILE = "./resources/clientconfig.ini"
@@ -88,8 +97,12 @@ class MyWin(QtWidgets.QMainWindow):
         :return: None - always
         """
         self.__client_connection.set_port(self.ui.portSpinBox.value())
-        if self.__client_connection.connect():
+        if self.__client_connection.connect() == 0:
             # Change color of <connect> button
+            self.log_info("connect fail")
+            self.ui.connectButton.setStyleSheet(DISCONNECT_COLOR)
+        else:
+            self.log_info("connected successfully")
             self.ui.connectButton.setStyleSheet(CONNECT_COLOR)
 
     def disconnect_slot(self):
@@ -98,7 +111,7 @@ class MyWin(QtWidgets.QMainWindow):
         =============================
         :return: None - always
         """
-        if self.__client_connection.close():
+        if self.__client_connection.close() != 0:
             self.ui.connectButton.setStyleSheet(DISCONNECT_COLOR)
 
     def send_slot(self):
@@ -129,9 +142,10 @@ class MyWin(QtWidgets.QMainWindow):
         :return: None - always
         """
         if self.__upload_path:
-            pass
+            self.__client_connection.send(("UPLOAD " + str(self.__upload_path) + "\n").encode())
+            commonFileLib.send_file(self.__client_connection, self.__upload_path, DEFAULT_SIZE)
         else:
-            self.log_info("path for file to upload wasn't setted")
+            self.log_info("path for file to upload wasn't settled")
 
     def download_slot(self):
         """
@@ -140,7 +154,8 @@ class MyWin(QtWidgets.QMainWindow):
         """
         down_path = self.ui.downloadFileLineEdit.text()
         if down_path:
-            pass
+            self.__client_connection.send(("DOWNLOAD " + str(down_path) + "\n").encode())
+            commonFileLib.receive_file(self.__client_connection, self.__upload_path, "")
         else:
             self.log_info("download path wasn't setted")
 

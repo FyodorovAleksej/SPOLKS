@@ -21,3 +21,17 @@ class ServerCommand:
         :return: is this exit command?
         """
         raise NotImplementedError("is exit method perform is not implemented")
+
+    @abstractmethod
+    def is_download_command(self):
+        """
+        :return: is this download command?
+        """
+        raise NotImplementedError("is download method perform is not implemented")
+
+    @abstractmethod
+    def is_upload_command(self):
+        """
+        :return: is this upload command?
+        """
+        raise NotImplementedError("is upload method perform is not implemented")
