@@ -80,7 +80,8 @@ if __name__ == "__main__":
                                 oldData += lines[j] + "\n"
                             commonFileLib.receive_file(serverConnector, command.perform_command(param), oldData)
                             i = len(lines)
-                            continue
+                            lines = []
+                            break
                         if command.is_download_command():
                             commonFileLib.send_file(serverConnector, command.perform_command(param), DEFAULT_SIZE)
                         if param is not None:
