@@ -18,12 +18,19 @@ def receive_file(server_connector, destination_path, old_data):
                 print("receive = " + data)
                 file_destination.write(data)
                 total_size += len(data)
+                if data == '':
+                    server_connector.set_timeout(None)
+                    break
             except socket.timeout:
                 server_connector.set_timeout(None)
                 break
     file_destination.flush()
     file_destination.close()
-    return total_size / (time.time() - start_time)
+    delta_time = time.time() - start_time
+    if delta_time == 0:
+        return 0
+    else:
+        return total_size / delta_time
 
 
 def send_file(server_connector, source_path, partition_size):
@@ -38,4 +45,8 @@ def send_file(server_connector, source_path, partition_size):
                 total_size += success * partition_size
             else:
                 break
-    return total_size / (time.time() - start_time)
+    delta_time = time.time() - start_time
+    if delta_time == 0:
+        return 0
+    else:
+        return total_size / delta_time
