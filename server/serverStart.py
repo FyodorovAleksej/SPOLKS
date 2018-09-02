@@ -3,22 +3,32 @@
 import socket
 
 from configobj import ConfigObj
-from serverParser import ServerParser, split_lines
 
+from server.parser.serverParser import ServerParser, split_lines
+
+# Path to properties file
 SERVER_PROPERTIES_FILE = "./resources/serverconfig.ini"
 
+# Keys to properties file
+# Number of port to connect
 SERVER_PORT_KEY = "default_port"
+# Max size to send/receive
 SERVER_SIZE_KEY = "default_size"
+# Host of socket
 SERVER_HOST_KEY = "server_host"
+# Max count of connections in socket queue
 SERVER_QUEUE_KEY = "server_queue"
 
+# Config
 config = ConfigObj(SERVER_PROPERTIES_FILE)
 
+# Reading config
 DEFAULT_PORT = int(config[SERVER_PORT_KEY])
 DEFAULT_HOST = config[SERVER_HOST_KEY]
 DEFAULT_SIZE = int(config[SERVER_SIZE_KEY])
 DEFAULT_QUEUE = int(config[SERVER_QUEUE_KEY])
 
+# crating socket
 sock = socket.socket()
 sock.bind((DEFAULT_HOST, DEFAULT_PORT))
 print("server was started")

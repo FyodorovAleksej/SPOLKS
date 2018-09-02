@@ -1,7 +1,7 @@
-from command import Command
+from server.command.serverCommand import ServerCommand
 
 
-class ExitCommand(Command):
+class ServerExitCommand(ServerCommand):
     def perform_command(self, param_string):
         return None
 
