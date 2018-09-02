@@ -78,12 +78,17 @@ if __name__ == "__main__":
                             oldData = ""
                             for j in range(i + 1, len(lines)):
                                 oldData += lines[j] + "\n"
-                            commonFileLib.receive_file(serverConnector, command.perform_command(param), oldData)
+                            speed = commonFileLib.receive_file(serverConnector, command.perform_command(param), oldData)
+                            response = str(speed)
+                            print("speed = " + response)
                             i = len(lines)
                             lines = []
                             break
                         if command.is_download_command():
-                            commonFileLib.send_file(serverConnector, command.perform_command(param), DEFAULT_SIZE)
+                            speed = commonFileLib.send_file(serverConnector, command.perform_command(param), DEFAULT_SIZE)
+                            response = str(speed)
+                            print("speed = " + response)
+                            break
                         if param is not None:
                             response += command.perform_command(param)
                     else:

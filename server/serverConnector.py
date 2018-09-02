@@ -78,4 +78,5 @@ class ServerConnector:
         """
         if self.__current_conn is not None:
             self.__current_conn.close()
-            self.__LOGGER.info("connection was closed")
+        self.__sock.close()
+        self.__LOGGER.info("closing connection.")
